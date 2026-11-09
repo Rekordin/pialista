@@ -1,0 +1,682 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#14090A">
+<title>Пиалиста</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#14090A;--panel:#1D0F11;--panel2:#2A1416;--line:#4A252A;--ink:#F3E3C3;--paper:#FBF7EE;--muted:#B8A78C;--gold:#D9A23F;--red:#E5122B;--red2:#A3000F;
+--tg-top:calc(var(--tg-safe-area-inset-top,env(safe-area-inset-top,0px)) + var(--tg-content-safe-area-inset-top,0px));
+--tg-bottom:calc(var(--tg-safe-area-inset-bottom,env(safe-area-inset-bottom,0px)) + var(--tg-content-safe-area-inset-bottom,0px));
+--tg-left:var(--tg-safe-area-inset-left,env(safe-area-inset-left,0px));--tg-right:var(--tg-safe-area-inset-right,env(safe-area-inset-right,0px))}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+body{background:var(--bg);color:var(--ink);font:400 15px/1.45 Inter,Arial,Helvetica,sans-serif;overscroll-behavior:none;padding-left:var(--tg-left);padding-right:var(--tg-right);min-height:var(--tg-viewport-stable-height,100vh)}
+button{font:inherit;color:inherit;cursor:pointer;border-radius:0;-webkit-user-select:none;user-select:none}
+button:disabled{opacity:.45;cursor:not-allowed}
+a{color:var(--gold)}
+.mono{font-family:"Rubik Mono One",Inter,Arial,sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:0}
+
+/* шапка */
+body::before{content:"";position:fixed;left:0;right:0;top:0;height:var(--tg-top);background:var(--bg);z-index:49;pointer-events:none}
+.top{position:sticky;top:var(--tg-top);z-index:30;background:var(--bg);border-bottom:2px solid var(--line)}
+.top-in{display:flex;align-items:center;gap:12px;height:56px;max-width:620px;margin:0 auto;padding:0 16px}
+.logo{width:38px;height:38px;border:2px solid var(--gold);overflow:hidden;flex:none;background:#f0dec0}
+.logo img{width:100%;height:100%;object-fit:cover;transform:scale(1.7);transform-origin:center 34%;display:block}
+.ttl{min-width:0;flex:1;line-height:1.1}
+.ttl b{display:block;font-size:15px}
+.ttl small{display:block;margin-top:5px;font-size:9px;font-weight:600;letter-spacing:.24em;color:var(--muted)}
+.me-chip{flex:none;border:2px solid var(--gold);color:var(--gold);padding:6px 10px;font-size:11px;font-weight:600;letter-spacing:.1em;white-space:nowrap;background:transparent}
+
+.main{max-width:620px;margin:0 auto;padding:16px 16px calc(92px + var(--tg-bottom))}
+
+/* нижняя навигация */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--bg);border-top:2px solid var(--line);padding-bottom:var(--tg-bottom);padding-left:var(--tg-left);padding-right:var(--tg-right)}
+.nav-in{display:grid;grid-template-columns:repeat(4,1fr);max-width:620px;margin:0 auto}
+.nav button{background:transparent;border:0;border-top:4px solid transparent;border-right:1px solid var(--line);color:var(--muted);height:58px;padding:0 2px;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+.nav button:last-child{border-right:0}
+.nav button.on{color:var(--paper);border-top-color:var(--red)}
+
+/* блоки */
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.eyebrow::before{content:"";width:9px;height:9px;background:var(--red);flex:none}
+h1{font-size:clamp(22px,6.4vw,30px);line-height:1.15;margin:10px 0 8px}
+.lead{color:var(--muted);font-size:14px;margin-bottom:16px}
+.banner{border:2px solid var(--line);border-left:6px solid var(--gold);background:var(--panel);padding:14px;margin-bottom:16px;font-size:14px}
+.banner.err{border-left-color:var(--red)}
+.banner b{display:block;margin-bottom:4px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+.banner p{color:var(--ink)}
+.banner small{display:block;margin-top:8px;color:var(--muted);font-size:12px}
+.cta{display:block;width:100%;margin-top:12px;min-height:50px;border:2px solid var(--red);background:var(--red2);color:var(--paper);font-weight:600;font-size:13px;letter-spacing:.12em;text-transform:uppercase}
+.cta.ghost{background:transparent;border-color:var(--line);color:var(--ink)}
+
+.chips{display:flex;gap:6px;margin:0 0 14px;overflow-x:auto;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips button{flex:1 0 auto;border:2px solid var(--line);background:transparent;color:var(--muted);padding:9px 7px;font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.chips button.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.tzline{font-size:11px;color:var(--muted);margin:-4px 0 14px;letter-spacing:.04em}
+.day{margin:22px 0 10px;display:flex;align-items:center;gap:12px;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink)}
+.day::after{content:"";flex:1;height:2px;background:var(--line)}
+.day:first-child{margin-top:4px}
+.empty{border:2px dashed var(--line);padding:26px 16px;text-align:center;color:var(--muted);font-size:14px}
+.note{font-size:12px;color:var(--muted);margin:6px 0 16px}
+
+/* карточка матча */
+.m{background:var(--panel);border:2px solid var(--line);margin-bottom:14px}
+.m.open{border-left:6px solid var(--red2)}
+.m.locked{border-left:6px solid var(--gold)}
+.m.dim{opacity:.8}
+.m-h{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 10px;padding:10px 14px;border-bottom:1px solid var(--line);font-size:11px;font-weight:600;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+.m-h .stg{color:var(--gold)}
+.m-h .x2{color:var(--paper);background:var(--red2);padding:1px 6px;margin-left:8px;letter-spacing:.06em}
+.m-t{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:center;padding:16px 14px}
+.tm{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;min-width:0}
+.bdg{width:46px;height:46px;border:2px solid var(--line);background:var(--bg);display:grid;place-items:center;font:12px "Rubik Mono One",Inter,sans-serif;color:var(--gold);overflow:hidden}
+.bdg img{width:100%;height:100%;object-fit:cover;display:block}
+.tm b{font-size:14px;line-height:1.2;overflow-wrap:anywhere;font-weight:600}
+.tm small{font-size:11px;color:var(--muted);overflow-wrap:anywhere}
+.vs{font:12px "Rubik Mono One",Inter,sans-serif;color:var(--muted)}
+.sc{font:28px/1 "Rubik Mono One",Inter,sans-serif;color:var(--paper);white-space:nowrap;text-align:center}
+.sc i{font-style:normal;color:var(--red);padding:0 4px}
+.sc small{display:block;margin-top:8px;font:600 10px Inter,sans-serif;letter-spacing:.12em;color:var(--muted)}
+.pk{padding:0 14px 14px;display:grid;gap:8px}
+.lbl{font-size:10px;font-weight:600;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;display:flex;justify-content:space-between;gap:8px}
+.lbl em{font-style:normal;color:var(--gold)}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.seg button,.num button{min-height:48px;border:2px solid var(--line);background:var(--bg);color:var(--ink);font-weight:600;font-size:15px}
+.num{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.num button{min-height:42px;font-size:14px}
+.seg button.on,.num button.on{background:var(--red2);border-color:var(--red);color:var(--paper)}
+.m-f{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);min-height:40px}
+.m-f .sv{font-weight:600;color:var(--gold);white-space:nowrap}
+.m-f .sv.bad{color:var(--red)}
+.m-f .cd{min-width:0}
+.res{padding:0 14px 12px;text-align:center;font-size:11px;font-weight:600;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+.my{margin:0 14px 14px;border:2px solid var(--line);padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:13px}
+.my .lab{font-size:10px;font-weight:600;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;width:100%}
+.my .tags{display:flex;gap:8px;flex-wrap:wrap}
+.tag{border:2px solid var(--line);padding:4px 9px;font-weight:600;font-size:13px}
+.tag.ok{border-color:var(--gold);color:var(--gold)}
+.tag.no{color:var(--muted);text-decoration:line-through;text-decoration-thickness:2px}
+.pts{font:18px "Rubik Mono One",Inter,sans-serif;color:var(--muted)}
+.pts.win{color:var(--gold)}
+.crowd{margin:0 14px 14px}
+.bar{display:flex;height:10px;border:2px solid var(--line);background:var(--bg)}
+.bar i{display:block;height:100%}
+.bar .h{background:var(--red2)}.bar .d{background:var(--gold)}.bar .a{background:var(--ink)}
+.cl{display:flex;justify-content:space-between;gap:8px;margin-top:6px;font-size:11px;color:var(--muted);flex-wrap:wrap}
+
+/* история и расписание */
+.sum{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border:2px solid var(--line);background:var(--panel);margin-bottom:10px}
+.sum>div{padding:14px;display:flex;flex-direction:column;gap:7px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-width:0}
+.sum>div:nth-child(2n){border-right:0}
+.sum>div:nth-child(n+3){border-bottom:0}
+.sum b{font-size:26px;line-height:1;color:var(--paper)}
+.sum span{font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.hx-t{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:10px;align-items:center;padding:14px;text-align:center}
+.hx-t b{font-size:14px;line-height:1.25;font-weight:600;overflow-wrap:anywhere}
+.hx-t b:only-child{grid-column:1/-1}
+.sc.sm{font-size:22px}
+.lnk{flex:none;border:2px solid var(--line);background:transparent;color:var(--ink);padding:7px 12px;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
+.sgrp{border:2px solid var(--line);background:var(--panel)}
+.sgrp>:last-child{border-bottom:0}
+.sr{display:grid;grid-template-columns:50px minmax(0,1fr) auto;gap:10px;align-items:center;width:100%;text-align:left;background:transparent;border:0;border-bottom:1px solid var(--line);color:inherit;padding:11px 12px;font:inherit}
+.sr-t{font:600 13px Inter,sans-serif;color:var(--gold);letter-spacing:.04em}
+.sr-n{display:flex;gap:6px;flex-wrap:wrap;align-items:baseline}
+.sr-n b{font-size:14px;font-weight:600;overflow-wrap:anywhere}
+.sr-n i{font-style:normal;color:var(--muted)}
+.sr-n .mu{color:var(--muted);font-weight:400}
+.sr-m{min-width:0}
+.sr-m small{display:block;margin-top:3px;font-size:10px;font-weight:600;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+.sr-s{max-width:84px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:right}
+.sr-s.ok{color:var(--gold)}
+.sr-s.todo{color:var(--red)}
+.sr-sc{font:16px "Rubik Mono One",Inter,sans-serif;color:var(--paper);text-align:right;white-space:nowrap}
+.sr-sc small{display:block;margin-top:5px;font:600 10px Inter,sans-serif;letter-spacing:.08em;color:var(--gold)}
+button.sr{cursor:pointer}
+
+/* таблица лидеров */
+.board{list-style:none;border:2px solid var(--line);background:var(--panel)}
+.lb{display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:10px;padding:12px 14px 12px 8px;border-bottom:1px solid var(--line);border-left:6px solid transparent}
+.lb:last-child{border-bottom:0}
+.lb .rk{font:15px "Rubik Mono One",Inter,sans-serif;color:var(--muted)}
+.lb.top3 .rk{color:var(--gold)}
+.lb .nm{min-width:0}
+.lb .nm b{display:block;font-weight:600;overflow-wrap:anywhere}
+.lb .nm small{display:block;font-size:12px;color:var(--muted);overflow-wrap:anywhere}
+.lb .pt{font:18px "Rubik Mono One",Inter,sans-serif;color:var(--paper)}
+.lb.me{background:var(--panel2);border-left-color:var(--red)}
+.mecard{border:2px solid var(--line);border-left:6px solid var(--red);background:var(--panel);padding:14px;margin-bottom:16px;display:grid;grid-template-columns:auto 1fr;gap:4px 16px;align-items:center}
+.mecard .big{grid-row:span 2;font:34px/1 "Rubik Mono One",Inter,sans-serif;color:var(--paper)}
+.mecard .big small{display:block;margin-top:6px;font:600 10px Inter,sans-serif;letter-spacing:.14em;color:var(--muted)}
+.mecard span{font-size:13px;color:var(--muted)}
+
+/* правила */
+.rules{display:grid;gap:12px}
+.card{border:2px solid var(--line);background:var(--panel);padding:14px}
+.card h2{font-size:13px;margin-bottom:10px;color:var(--gold)}
+.card p,.card li{font-size:14px;color:var(--ink)}
+.card ul{list-style:none;display:grid;gap:8px}
+.card li{padding-left:16px;position:relative}
+.card li::before{content:"";position:absolute;left:0;top:.6em;width:8px;height:8px;background:var(--red)}
+.pt-table{width:100%;border-collapse:collapse;font-size:14px}
+.pt-table td{padding:9px 0;border-bottom:1px solid var(--line)}
+.pt-table tr:last-child td{border-bottom:0}
+.pt-table td:last-child{text-align:right;font:600 15px Inter,sans-serif;color:var(--gold)}
+
+/* уведомление */
+.toast{position:fixed;left:50%;bottom:calc(76px + var(--tg-bottom));transform:translateX(-50%);z-index:60;max-width:min(92vw,520px);background:var(--ink);color:var(--bg);padding:12px 16px;font-size:13px;font-weight:600;border:2px solid var(--bg)}
+.toast.err{background:var(--red2);color:var(--paper);border-color:var(--red)}
+.loading{padding:40px 0;text-align:center;color:var(--muted);font-size:13px;letter-spacing:.08em}
+</style>
+</head>
+<body>
+<div id="app"><div class="loading">ЗАГРУЖАЕМ…</div></div>
+<script>
+(()=>{"use strict";
+// =====================================================================
+//  НАСТРОЙКИ (при необходимости правьте только этот блок)
+// =====================================================================
+const SUPABASE_URL="https://cjwpxtxwlxtontpngjjy.supabase.co";   // та же база, что у сайта статистики
+const SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqd3B4dHh3bHh0b250cG5namp5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5ODEyNDMsImV4cCI6MjEwNzU1NzI0M30.MU4k9UcxD0W7VlBLyCCCtI1SGOKF_dUq6NDKWUVhqEU";
+const LOGO="data:image/webp;base64,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";
+const PRIZES=[                           // блок «Призы» на вкладке «Правила»
+  {place:"ПОБЕДИТЕЛЬ КОНКУРСА",text:"Призы от спонсоров турнира"}
+];
+const APP_LINK="";                       // ссылка на это приложение, например https://t.me/ваш_бот/predict — включает кнопку «Пригласить друзей»
+// =====================================================================
+
+// ---------- Telegram ----------
+const tgw=window.Telegram&&window.Telegram.WebApp;
+const TG=tgw&&(tgw.initData||(tgw.platform&&tgw.platform!=="unknown"))?tgw:null;
+const INIT=TG?String(TG.initData||""):"";
+const tgOk=v=>{try{return !!TG&&TG.isVersionAtLeast(v)}catch{return false}};
+const tgTry=fn=>{try{return fn()}catch{}};
+function haptic(kind){if(!tgOk("6.1")||!TG.HapticFeedback)return;tgTry(()=>{const h=TG.HapticFeedback;if(kind==="select")h.selectionChanged();else if(kind==="tap")h.impactOccurred("light");else h.notificationOccurred(kind)})}
+if(TG){
+  tgTry(()=>TG.ready());tgTry(()=>TG.expand());
+  if(tgOk("7.7"))tgTry(()=>TG.disableVerticalSwipes());
+  if(tgOk("6.1")){tgTry(()=>TG.setHeaderColor("#14090A"));tgTry(()=>TG.setBackgroundColor("#14090A"))}
+  if(tgOk("7.10"))tgTry(()=>TG.setBottomBarColor("#14090A"));
+}
+
+// ---------- утилиты ----------
+const $=id=>document.getElementById(id);
+const root=$("app");
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]);
+const OUT={h:"П1",d:"Х",a:"П2"};
+const ROUND_NAMES=["1/8 ФИНАЛА","1/4 ФИНАЛА","ПОЛУФИНАЛ","ФИНАЛ"];
+const GROUPS=["A","B","C","D","E","F"];
+const TOTALS=Array.from({length:12},(_,i)=>i);
+const MULT=2;
+
+const ERR={
+  closed:"Приём прогнозов на этот матч уже закрыт",
+  not_registered:"Сначала нажмите «Участвовать»",
+  no_match:"Матч не найден — обновите страницу",
+  bad_pick:"Не удалось сохранить прогноз",
+  expired:"Сессия Telegram устарела. Закройте приложение и откройте заново",
+  bad_hash:"Не удалось подтвердить аккаунт Telegram. Откройте приложение через бота",
+  bad_init_data:"Не удалось подтвердить аккаунт Telegram. Откройте приложение через бота",
+  bot_token_not_set:"Конкурс ещё не настроен организатором",
+  net:"Нет связи с сервером. Проверьте интернет"
+};
+class AppError extends Error{constructor(code){super(code);this.code=code}}
+async function rpc(fn,args){
+  let res;
+  try{res=await fetch(SUPABASE_URL.replace(/\/$/,"")+"/rest/v1/rpc/"+fn,{method:"POST",cache:"no-store",headers:{apikey:SUPABASE_KEY,Authorization:"Bearer "+SUPABASE_KEY,"Content-Type":"application/json"},body:JSON.stringify(args||{})})}
+  catch{throw new AppError("net")}
+  if(!res.ok){
+    let m="";try{m=(await res.json()).message||""}catch{}
+    if(res.status===404||/does not exist|Could not find the function/i.test(m))throw new AppError("not_installed");
+    throw new AppError(m||("http_"+res.status));
+  }
+  return res.json();
+}
+const errText=e=>ERR[e&&e.code]||(e&&e.code==="not_installed"?"База прогнозов не настроена":"Что-то пошло не так. Попробуйте ещё раз");
+
+// ---------- состояние ----------
+let sched=null,logos={},list=[],tmap=new Map(),tiemap=new Map();
+let ov={auth:INIT?"pending":"none",registered:false,me:null,picks:{},crowd:{},players:0,version:null};
+let board=null,tab="matches",filter="soon",offset=0,fatal="",loaded=false,toastTimer=0,lockH=10,stSig="";
+const queue={},status={};   // status[id]: "saving" | "saved" | "bad"
+
+const nowMs=()=>Date.now()+offset;
+const tzLabel=()=>{const o=-new Date().getTimezoneOffset()/60;return "GMT"+(o>=0?"+":"−")+Math.abs(o)};
+const fmtDay=ts=>new Intl.DateTimeFormat("ru-RU",{weekday:"short",day:"numeric",month:"long"}).format(new Date(ts));
+const fmtTime=ts=>new Intl.DateTimeFormat("ru-RU",{hour:"2-digit",minute:"2-digit"}).format(new Date(ts));
+const dayKey=ts=>{const d=new Date(ts);return d.getFullYear()+"-"+d.getMonth()+"-"+d.getDate()};
+const fmtShort=ts=>new Intl.DateTimeFormat("ru-RU",{day:"numeric",month:"short"}).format(new Date(ts));
+function dayWord(ts){const k=dayKey(ts),n=nowMs();return k===dayKey(n)?"сегодня":k===dayKey(n+864e5)?"завтра":k===dayKey(n-864e5)?"вчера":fmtShort(ts)}
+const fmtWhen=ts=>dayWord(ts)+", "+fmtTime(ts);
+const lockMs=()=>lockH*3600000;
+const tname=id=>{const t=tmap.get(id);return t?t.name:"—"};
+function left(ms){
+  if(ms<=0)return "";
+  const m=Math.floor(ms/60000),h=Math.floor(m/60),d=Math.floor(h/24);
+  if(d>=2)return d+" дн.";
+  if(h>=1)return h+" ч "+String(m%60).padStart(2,"0")+" м";
+  if(m>=1)return m+" мин";
+  return "меньше минуты";
+}
+
+// ---------- турнирная логика (перенесена из сайта статистики) ----------
+function baseRows(D,teams,matches){return teams.map(team=>{let w=0,dr=0,l=0,gf=0,ga=0;for(const m of matches.filter(x=>x.status==="played"&&(x.home===team.id||x.away===team.id))){const a=(m.home===team.id?m.hg:m.ag)??0,b=(m.home===team.id?m.ag:m.hg)??0;gf+=a;ga+=b;if(a>b)w++;else if(a<b)l++;else dr++}return{team,played:w+dr+l,w,d:dr,l,gf,ga,gd:gf-ga,pts:w*3+dr}})}
+const primary=(a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.gf;
+function standings(D,g){
+  const matches=D.matches.filter(m=>m.stage==="group"&&m.group===g);
+  if(matches.every(m=>m.status!=="played"))return baseRows(D,D.teams.filter(t=>t.group===g),matches);
+  const rows=baseRows(D,D.teams.filter(t=>t.group===g),matches).sort(primary),out=[];
+  for(let i=0;i<rows.length;){
+    let j=i+1;while(j<rows.length&&!primary(rows[i],rows[j]))j++;
+    const tied=rows.slice(i,j);
+    if(tied.length>1){
+      const ids=new Set(tied.map(r=>r.team.id));
+      const h=baseRows(D,tied.map(r=>r.team),matches.filter(m=>ids.has(m.home)&&ids.has(m.away)));
+      const look=new Map(h.map(r=>[r.team.id,r]));
+      tied.sort((a,b)=>primary(look.get(a.team.id),look.get(b.team.id))||a.team.id.localeCompare(b.team.id,undefined,{numeric:true}));
+      tied.forEach(a=>a.unresolved=tied.some(b=>b!==a&&!primary(look.get(a.team.id),look.get(b.team.id))));
+    }
+    out.push(...tied);i=j;
+  }
+  return out;
+}
+const thirdRows=D=>GROUPS.map(g=>standings(D,g)[2]).filter(Boolean).sort((a,b)=>primary(a,b)||a.team.group.localeCompare(b.team.group));
+const groupsComplete=D=>GROUPS.every(g=>{const t=D.teams.filter(x=>x.group===g),m=D.matches.filter(x=>x.stage==="group"&&x.group===g);return t.length===4&&m.length===6&&m.every(x=>x.status==="played")});
+function resolve(D,src,depth=0){
+  if(!src||depth>12)return null;
+  if(src.startsWith("team:"))return D.teams.some(t=>t.id===src.slice(5))?src.slice(5):null;
+  if(src.startsWith("g:")){if(!groupsComplete(D))return null;const[,g,p]=src.split(":"),row=standings(D,g)[Number(p)-1];return row&&!row.unresolved?row.team.id:null}
+  if(src.startsWith("third:")){if(!groupsComplete(D))return null;const rows=thirdRows(D),i=Number(src.split(":")[1])-1,row=rows[i];if(!row||row.unresolved||rows.some((r,j)=>j!==i&&!primary(row,r)))return null;return row.team.id}
+  if(src.startsWith("winner:"))return tieResult(D,src.slice(7),depth+1).winner;
+  return null;
+}
+function tieResult(D,id,depth=0){
+  const t=D.ties.find(x=>x.id===id);
+  if(!t||depth>12)return{winner:null};
+  const home=resolve(D,t.home,depth+1),away=resolve(D,t.away,depth+1);
+  const legs=D.matches.filter(m=>m.tie===id).sort((a,b)=>a.leg-b.leg);
+  const done=legs.length===2&&legs.every(m=>m.status==="played");
+  const hs=legs.reduce((n,m)=>n+(m.status==="played"?(m.leg===1?m.hg:m.ag)||0:0),0),as=legs.reduce((n,m)=>n+(m.status==="played"?(m.leg===1?m.ag:m.hg)||0:0),0);
+  let winner=null;
+  if(done&&home&&away){if(hs!==as)winner=hs>as?home:away;else{const s=legs[1];if(s.hp!=null&&s.ap!=null&&s.hp!==s.ap)winner=s.hp>s.ap?away:home}}
+  return{winner};
+}
+function matchTeams(D,m){
+  if(m.stage==="group")return[m.home||null,m.away||null];
+  const t=D.ties.find(x=>x.id===m.tie);
+  if(!t)return[null,null];
+  const h=resolve(D,t.home),a=resolve(D,t.away);
+  return m.leg===1?[h,a]:[a,h];
+}
+
+// ---------- данные ----------
+function applySchedule(s){
+  sched=s;offset=s.now-Date.now();if(Number.isFinite(s.lock_hours))lockH=s.lock_hours;
+  const D={teams:s.teams,matches:s.matches,ties:s.ties};
+  tmap=new Map(s.teams.map(t=>[t.id,t]));tiemap=new Map(s.ties.map(t=>[t.id,t]));
+  list=s.matches.map(m=>{
+    let h=null,a=null;
+    try{[h,a]=matchTeams(D,m)}catch{}
+    const ts=m.date?Date.parse(m.date):NaN;
+    return{...m,h,a,ts:Number.isFinite(ts)?ts:null};
+  });
+}
+function applyOverview(o){
+  offset=o.now-Date.now();if(Number.isFinite(o.lock_hours))lockH=o.lock_hours;
+  ov={...o};
+  for(const k of Object.keys(status))if(status[k]==="bad")delete status[k];
+}
+async function loadSchedule(){applySchedule(await rpc("pp_schedule"))}
+async function loadOverview(){applyOverview(await rpc("pp_overview",{p_init:INIT||null}))}
+async function loadLogos(){try{logos=await rpc("pp_logos")||{};if(tab==="matches")renderBody()}catch{}}
+async function loadBoard(){try{board=await rpc("pp_board",{p_init:INIT||null,p_limit:100});if(tab==="board")renderBody()}catch(e){if(tab==="board"){toast(errText(e),true)}}}
+
+async function boot(){
+  try{
+    await Promise.all([loadSchedule(),loadOverview()]);
+    fatal="";loaded=true;
+  }catch(e){
+    fatal=e.code==="not_installed"?"Конкурс прогнозов ещё не настроен. Организатору: выполните SQL из инструкции (файл setup.sql) в Supabase.":errText(e);
+  }
+  render();
+  if(loaded){loadLogos();loadBoard()}
+}
+async function syncAll(){const prev=ov.version;await loadOverview();if(ov.version!==prev||!sched)await loadSchedule()}
+const sig=()=>JSON.stringify([lockH,ov.version,ov.auth,ov.registered,ov.me,ov.picks,ov.crowd,sched&&sched.version,board&&board.rows]);
+async function poll(){
+  if(document.hidden||!loaded||Object.values(status).includes("saving"))return;
+  try{
+    const before=sig();
+    await syncAll();
+    if(tab==="board")await loadBoard();
+    if(sig()!==before)render(true);
+  }catch{}
+}
+setInterval(poll,20000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)poll()});
+
+// ---------- состояние матча ----------
+function stateOf(m){
+  if(m.status==="played"&&m.hg!=null&&m.ag!=null)return "played";
+  if(!m.h||!m.a)return "tbd";
+  if(m.ts===null)return "nodate";
+  const n=nowMs();
+  if(m.ts<=n)return "live";
+  if(m.ts-lockMs()<=n)return "locked";
+  return "open";
+}
+const canPick=()=>ov.auth==="ok"&&ov.registered;
+function stageLabel(m){
+  if(m.stage==="group")return "ГРУППА "+esc(m.group);
+  const t=tiemap.get(m.tie);
+  return (t&&ROUND_NAMES[t.round]?ROUND_NAMES[t.round]:"ПЛЕЙ-ОФФ")+" · МАТЧ "+esc(m.leg||"");
+}
+function badge(id){
+  const t=tmap.get(id);if(!t)return `<span class="bdg">?</span>`;
+  const img=logos[id];
+  if(img&&/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+\/=]+$/.test(img))return `<span class="bdg"><img src="${img}" alt=""></span>`;
+  const ini=t.name.trim().split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase();
+  return `<span class="bdg">${esc(ini)}</span>`;
+}
+function team(id){const t=tmap.get(id);return `<div class="tm">${badge(id)}<b>${esc(t?t.name:"—")}</b>${t&&t.owner?`<small>${esc(t.owner)}</small>`:""}</div>`}
+const outcomeOf=m=>m.hg>m.ag?"h":m.hg<m.ag?"a":"d";
+
+function pickHtml(m,st){
+  const p=ov.picks[m.id]||{};
+  return `<div class="pk">
+  <div class="lbl"><span>Исход матча</span><em>+1</em></div>
+  <div class="seg">${["h","d","a"].map(k=>`<button type="button" class="${p.o===k?"on":""}" data-act="o" data-id="${esc(m.id)}" data-v="${k}">${OUT[k]}</button>`).join("")}</div>
+  <div class="lbl"><span>Тотал голов · точное число</span><em>+1</em></div>
+  <div class="num">${TOTALS.map(n=>`<button type="button" class="${p.t===n?"on":""}" data-act="t" data-id="${esc(m.id)}" data-v="${n}">${n}</button>`).join("")}</div>
+  </div>`;
+}
+function footHtml(m,st){
+  const s=status[m.id];
+  const sv=s==="saving"?`<span class="sv">сохраняю…</span>`:s==="bad"?`<span class="sv bad">не сохранено</span>`:(ov.picks[m.id]&&(ov.picks[m.id].o||ov.picks[m.id].t!=null))?`<span class="sv">✓ ${ov.picks[m.id].o&&ov.picks[m.id].t!=null?"прогноз принят":"ещё выберите "+(ov.picks[m.id].o?"тотал":"исход")}</span>`:`<span class="sv bad">нет прогноза</span>`;
+  return `<footer class="m-f"><span class="cd" data-closes="${m.ts-lockMs()}">${closeText(m)}</span>${sv}</footer>`;
+}
+function closeText(m){
+  if(m.ts===null)return "";
+  const lt=m.ts-lockMs(),l=left(lt-nowMs());
+  return "Приём закроется "+dayWord(lt)+" в "+fmtTime(lt)+(l?" · осталось "+l:"");
+}
+function crowdHtml(id){
+  const c=ov.crowd[id];if(!c||!c.n)return "";
+  const pc=k=>Math.round(c[k]*100/c.n);
+  const h=pc("h"),d=pc("d"),a=Math.max(0,100-h-d);
+  return `<div class="crowd"><div class="lbl"><span>Как проголосовали</span><span>${c.n} прогн.</span></div><div class="bar" style="margin-top:6px"><i class="h" style="width:${h}%"></i><i class="d" style="width:${d}%"></i><i class="a" style="width:${a}%"></i></div><div class="cl"><span>П1 ${h}%</span><span>Х ${d}%</span><span>П2 ${a}%</span>${c.avg!=null?`<span>ср. тотал ${esc(c.avg)}</span>`:""}</div></div>`;
+}
+function myHtml(m,st){
+  const p=ov.picks[m.id];
+  if(ov.auth!=="ok"||!ov.registered)return "";
+  if(!p||(!p.o&&p.t==null))return `<div class="my"><span class="lab">Ваш прогноз</span><span style="color:var(--muted)">Вы не делали прогноз на этот матч</span></div>`;
+  const played=st==="played";
+  const oTag=p.o?`<span class="tag ${played?(p.ook?"ok":"no"):""}">${OUT[p.o]}${played?(p.ook?" ✓":""):""}</span>`:`<span class="tag no">без исхода</span>`;
+  const tTag=p.t!=null?`<span class="tag ${played?(p.tok?"ok":"no"):""}">${p.t} гол.${played?(p.tok?" ✓":""):""}</span>`:`<span class="tag no">без тотала</span>`;
+  const pts=played?`<span class="pts ${p.pts>0?"win":""}">${p.pts>0?"+":""}${p.pts??0}</span>`:"";
+  return `<div class="my"><span class="lab">Ваш прогноз</span><span class="tags">${oTag}${tTag}</span>${pts}</div>`;
+}
+function cardHtml(m){
+  const st=stateOf(m),x2=m.stage==="playoff"?`<span class="x2">×${MULT}</span>`:"";
+  const when=m.ts!==null?fmtDay(m.ts)+" · "+fmtTime(m.ts):"время уточняется";
+  const head=`<header class="m-h"><span class="stg">${stageLabel(m)}${x2}</span><span>${esc(m.ts!==null?fmtTime(m.ts):"")}</span></header>`;
+  const A=(cls)=>`<article class="m${cls}" data-st="${st}" data-mid="${esc(m.id)}">`;
+  const teams=(mid)=>`<div class="m-t">${team(m.h)}${mid}${team(m.a)}</div>`;
+  if(st==="played"){
+    const pen=(m.hp!=null&&m.ap!=null)?`<small>пен. ${esc(m.hp)}:${esc(m.ap)}</small>`:"";
+    return `${A("")}${head}${teams(`<div class="sc">${m.hg}<i>:</i>${m.ag}${pen}</div>`)}<div class="res">Итог · ${OUT[outcomeOf(m)]} · тотал ${m.hg+m.ag}</div>${myHtml(m,st)}${crowdHtml(m.id)}</article>`;
+  }
+  if(st==="live")return `${A("")}${head}${teams(`<div class="vs">VS</div>`)}<div class="res">Матч начался · приём закрыт, ждём результат</div>${myHtml(m,st)}${crowdHtml(m.id)}</article>`;
+  if(st==="locked")return `${A(" locked")}${head}${teams(`<div class="vs">VS</div>`)}<div class="res">Приём прогнозов закрыт · матч ${esc(dayWord(m.ts))} в ${esc(fmtTime(m.ts))}</div>${myHtml(m,st)}${crowdHtml(m.id)}</article>`;
+  if(st==="open")return `${A(" open")}${head}${teams(`<div class="vs">VS</div>`)}${pickHtml(m,st)}${footHtml(m,st)}</article>`;
+  return `${A(" dim")}${head}${teams(`<div class="vs">VS</div>`)}<div class="res">${st==="nodate"?"Время матча уточняется":"Пара определится позже"}</div></article>`;
+}
+function updateCard(id){
+  const m=list.find(x=>x.id===id),el=root.querySelector(`[data-mid="${CSS.escape(id)}"]`);
+  if(!m||!el)return;
+  const t=document.createElement("div");t.innerHTML=cardHtml(m);
+  el.replaceWith(t.firstElementChild);
+}
+
+// ---------- экраны ----------
+function bannerHtml(){
+  if(fatal)return `<div class="banner err"><b>Нет данных</b><p>${esc(fatal)}</p><button class="cta ghost" data-act="retry">Повторить</button></div>`;
+  if(!INIT)return `<div class="banner"><b>Откройте в Telegram</b><p>Чтобы делать прогнозы и участвовать в конкурсе, откройте это приложение через нашего бота в Telegram. Здесь вы можете смотреть расписание и результаты.</p></div>`;
+  if(ov.auth==="expired")return `<div class="banner err"><b>Сессия устарела</b><p>Закройте приложение и откройте его заново.</p></div>`;
+  if(ov.auth==="bot_token_not_set")return `<div class="banner err"><b>Конкурс ещё не запущен</b><p>Организатор не завершил настройку. Загляните позже.</p></div>`;
+  if(ov.auth==="bad_hash"||ov.auth==="bad_init_data")return `<div class="banner err"><b>Не удалось войти</b><p>Не получилось подтвердить аккаунт Telegram. Откройте приложение через бота.</p></div>`;
+  if(ov.auth==="ok"&&!ov.registered)return `<div class="banner"><b>Участвуйте в конкурсе прогнозов</b><p>Угадывайте исход и точное число голов в матчах турнира. Лучший по очкам получит призы от спонсоров.</p><button class="cta" data-act="register">Участвовать</button><small>Нажимая кнопку, вы соглашаетесь, что ваше имя и @username будут видны в таблице лидеров.</small></div>`;
+  return "";
+}
+function matchesHtml(){
+  const chips=`<div class="chips">${[["soon","Ближайшие"],["all","Расписание"],["mine","Мои"],["done","Итоги"]].map(([k,t])=>`<button type="button" class="${filter===k?"on":""}" data-act="filter" data-v="${k}">${t}</button>`).join("")}</div>`;
+  if(!sched)return chips+`<div class="loading">ЗАГРУЖАЕМ РАСПИСАНИЕ…</div>`;
+  if(filter==="all")return chips+scheduleHtml();
+  let items=list.map(m=>({m,st:stateOf(m)}));
+  let note="";
+  if(filter==="soon"){
+    const tbd=items.filter(x=>x.st==="tbd").length;
+    items=items.filter(x=>x.st==="open"||x.st==="locked"||x.st==="live"||x.st==="nodate");
+    items.sort((a,b)=>(a.m.ts??Infinity)-(b.m.ts??Infinity));
+    if(tbd)note=`<p class="note">Ещё ${tbd} матч(ей) плей-офф: пары определятся по итогам предыдущих этапов.</p>`;
+  }else if(filter==="mine"){
+    items=items.filter(x=>{const p=ov.picks[x.m.id];return p&&(p.o||p.t!=null)});
+    items.sort((a,b)=>(b.m.ts??0)-(a.m.ts??0));
+  }else{
+    items=items.filter(x=>x.st==="played");
+    items.sort((a,b)=>(b.m.ts??0)-(a.m.ts??0));
+  }
+  if(!items.length){
+    const t=filter==="soon"?"Сейчас нет матчей для прогноза. Загляните позже: организатор добавит расписание.":filter==="mine"?"Вы ещё не сделали ни одного прогноза.":"Сыгранных матчей пока нет.";
+    return chips+`<div class="empty">${t}</div>`+note;
+  }
+  let html=chips+`<div class="tzline">Время указано по вашему часовому поясу (${tzLabel()}). Приём прогнозов закрывается за ${lockH} ч до начала матча.</div>`,lastKey="";
+  for(const {m} of items){
+    const key=m.ts===null?"none":dayKey(m.ts);
+    if(key!==lastKey){html+=`<div class="day">${m.ts===null?"Время уточняется":esc(fmtDay(m.ts))}</div>`;lastKey=key}
+    html+=cardHtml(m);
+  }
+  return html+note;
+}
+function rowHtml(m,st){
+  const p=ov.picks[m.id],has=p&&(p.o||p.t!=null);
+  const names=m.h&&m.a?`<b>${esc(tname(m.h))}</b><i>—</i><b>${esc(tname(m.a))}</b>`:`<b class="mu">Пара определится позже</b>`;
+  let right="";
+  if(st==="played")right=`<span class="sr-sc">${m.hg}:${m.ag}${p&&p.pts!=null?`<small>${p.pts>0?"+":""}${p.pts} очк.</small>`:""}</span>`;
+  else if(st==="open")right=has&&p.o&&p.t!=null?`<span class="sr-s ok">✓ прогноз</span>`:`<span class="sr-s todo">прогноз →</span>`;
+  else if(st==="locked")right=`<span class="sr-s">приём закрыт</span>`;
+  else if(st==="live")right=`<span class="sr-s">идёт</span>`;
+  const inner=`<span class="sr-t">${m.ts!==null?esc(fmtTime(m.ts)):"—"}</span><span class="sr-m"><span class="sr-n">${names}</span><small>${stageLabel(m)}${m.stage==="playoff"?" · ×"+MULT:""}</small></span>${right}`;
+  return st==="open"?`<button type="button" class="sr" data-act="goto" data-id="${esc(m.id)}">${inner}</button>`:`<div class="sr">${inner}</div>`;
+}
+function scheduleHtml(){
+  const items=list.map(m=>({m,st:stateOf(m)}));
+  const dated=items.filter(x=>x.m.ts!==null).sort((a,b)=>a.m.ts-b.m.ts||String(a.m.id).localeCompare(String(b.m.id)));
+  const nodate=items.filter(x=>x.m.ts===null&&x.st==="nodate");
+  const tbd=items.filter(x=>x.m.ts===null&&x.st!=="nodate").length;
+  if(!dated.length&&!nodate.length&&!tbd)return `<div class="empty">Расписание пока пустое. Организатор добавит матчи на сайте турнира.</div>`;
+  let html=`<div class="tzline">Время указано по вашему часовому поясу (${tzLabel()})</div>`,key="",rows="";
+  const flush=()=>{if(rows)html+=`<div class="sgrp">${rows}</div>`;rows=""};
+  for(const {m,st} of dated){
+    const k=dayKey(m.ts);
+    if(k!==key){flush();html+=`<div class="day">${esc(fmtDay(m.ts))}</div>`;key=k}
+    rows+=rowHtml(m,st);
+  }
+  flush();
+  if(nodate.length){html+=`<div class="day">Время уточняется</div><div class="sgrp">${nodate.map(x=>rowHtml(x.m,x.st)).join("")}</div>`}
+  if(tbd)html+=`<p class="note">Ещё ${tbd} матч(ей) плей-офф: пары и время появятся по итогам предыдущих этапов.</p>`;
+  return html+`<p class="note">Расписание и результаты подтягиваются с сайта статистики турнира и обновляются автоматически.</p>`;
+}
+function histRow(m,st){
+  const p=ov.picks[m.id]||{},x2=m.stage==="playoff"?`<span class="x2">×${MULT}</span>`:"";
+  const when=m.ts!==null?fmtShort(m.ts)+" · "+fmtTime(m.ts):"время уточняется";
+  const mid=st==="played"?`<div class="sc sm">${m.hg}<i>:</i>${m.ag}</div>`:`<div class="vs">VS</div>`;
+  const names=m.h&&m.a?`<div class="hx-t"><b>${esc(tname(m.h))}</b>${mid}<b>${esc(tname(m.a))}</b></div>`:`<div class="hx-t"><b>Пара уточняется</b></div>`;
+  let res="";
+  if(st==="played"){const pen=(m.hp!=null&&m.ap!=null)?" · пен. "+m.hp+":"+m.ap:"";res=`Итог · ${OUT[outcomeOf(m)]} · тотал ${m.hg+m.ag}${pen}`}
+  else if(st==="open")res="Можно изменить: "+closeText(m).replace(/^Приём закроется/,"приём закроется");
+  else if(st==="locked")res=`Приём закрыт · матч ${dayWord(m.ts)} в ${fmtTime(m.ts)}`;
+  else res="Матч начался · ждём результат";
+  const left=p.at?`Принят ${esc(fmtWhen(p.at))}`:"";
+  const btn=st==="open"?`<button type="button" class="lnk" data-act="edit" data-id="${esc(m.id)}">Изменить</button>`:"";
+  return `<article class="m" data-st="${st}">
+  <header class="m-h"><span class="stg">${stageLabel(m)}${x2}</span><span>${esc(when)}</span></header>${names}
+  <div class="res">${esc(res)}</div>${myHtml(m,st)}
+  ${left||btn?`<footer class="m-f"><span class="cd">${left}</span>${btn}</footer>`:""}</article>`;
+}
+function historyHtml(){
+  const head=`<div class="eyebrow">МОИ ПРОГНОЗЫ</div><h1 class="mono">История</h1><p class="lead">Все ваши прогнозы с реальным счётом матчей и набранными очками. История хранится на сервере и привязана к вашему аккаунту Telegram.</p>`;
+  if(!canPick())return head+bannerHtml()+`<div class="empty">История появится после регистрации и первых прогнозов.</div>`;
+  if(!sched)return head+`<div class="loading">ЗАГРУЖАЕМ…</div>`;
+  const all=list.map(m=>({m,st:stateOf(m),p:ov.picks[m.id]})).filter(x=>x.p&&(x.p.o||x.p.t!=null));
+  if(!all.length)return head+`<div class="empty">Вы ещё не сделали ни одного прогноза.</div><button class="cta" data-act="tab" data-v="matches">К матчам</button>`;
+  const done=all.filter(x=>x.st==="played").sort((a,b)=>(b.m.ts??0)-(a.m.ts??0));
+  const wait=all.filter(x=>x.st!=="played").sort((a,b)=>(a.m.ts??Infinity)-(b.m.ts??Infinity));
+  const n=done.length,o=done.filter(x=>x.p.ook).length,t=done.filter(x=>x.p.tok).length,b=done.filter(x=>x.p.ook&&x.p.tok).length;
+  const playedAll=list.filter(m=>stateOf(m)==="played").length,missed=Math.max(0,playedAll-n);
+  const pts=ov.me?ov.me.points:done.reduce((s,x)=>s+(x.p.pts||0),0);
+  const sum=`<div class="sum"><div><b class="mono">${esc(pts)}</b><span>очков</span></div><div><b class="mono">${all.length}</b><span>прогнозов</span></div><div><b class="mono">${o}/${n}</b><span>исходов угадано</span></div><div><b class="mono">${t}/${n}</b><span>тоталов угадано</span></div></div>`;
+  const sub=n?`Сыграно матчей: ${playedAll}. Оба прогноза угаданы в ${b} из ${n}${missed?" · без прогноза: "+missed:""}.`:"Сыгранных матчей с вашими прогнозами пока нет.";
+  let html=head+sum+`<p class="note">${sub}</p>`;
+  if(wait.length)html+=`<div class="day">Ждут матча · ${wait.length}</div>`+wait.map(x=>histRow(x.m,x.st)).join("");
+  if(done.length)html+=`<div class="day">Сыграны · ${done.length}</div>`+done.map(x=>histRow(x.m,x.st)).join("");
+  return html;
+}
+function boardHtml(){
+  if(!board)return `<div class="loading">ЗАГРУЖАЕМ ТАБЛИЦУ…</div>`;
+  const me=board.me;
+  const meCard=me?`<div class="mecard"><div class="big">${esc(me.rank)}<small>МЕСТО</small></div><b>${esc(me.name)}</b><span>${esc(me.points)} очк. · угадано исход+тотал: ${esc(me.both)} · сыграно матчей: ${esc(me.played)}</span></div>`:"";
+  const rows=board.rows.length?`<ul class="board">${board.rows.map(r=>`<li class="lb ${r.me?"me":""} ${r.rank<=3?"top3":""}"><span class="rk">${esc(r.rank)}</span><span class="nm"><b>${esc(r.name)}</b>${r.username?`<small>@${esc(r.username)}</small>`:""}</span><span class="pt">${esc(r.points)}</span></li>`).join("")}</ul>`:`<div class="empty">Пока никто не участвует. Станьте первым!</div>`;
+  const share=APP_LINK?`<button class="cta ghost" data-act="share">Пригласить друзей</button>`:"";
+  return `<div class="eyebrow">ТАБЛИЦА ЛИДЕРОВ</div><h1 class="mono">Лидеры конкурса</h1><p class="lead">Участников: ${esc(board.total)}. Очки считаются автоматически после каждого матча.</p>${meCard}${rows}${share}`;
+}
+function rulesHtml(){
+  return `<div class="eyebrow">КОНКУРС ПРОГНОЗОВ</div><h1 class="mono">Правила</h1><p class="lead">Пиалиста — конкурс прогнозов турнира Пиала Cup II. Угадывайте результаты матчей и боритесь за призы от спонсоров.</p>
+  <div class="rules">
+   <div class="card"><h2 class="mono">Очки за матч</h2><table class="pt-table">
+     <tr><td>Угадан исход (П1 / Х / П2)</td><td>+1</td></tr>
+     <tr><td>Угадано точное число голов в матче</td><td>+1</td></tr>
+     <tr><td>Бонус, если угаданы оба прогноза</td><td>+1</td></tr>
+     <tr><td>Максимум за матч группового этапа</td><td>3</td></tr>
+     <tr><td>Матчи плей-офф: все очки ×${MULT}</td><td>до ${3*MULT}</td></tr></table></div>
+   <div class="card"><h2 class="mono">Как это работает</h2><ul>
+     <li>Выберите исход и точное число голов (сумма голов обеих команд) в каждом матче.</li>
+     <li>Прогноз можно менять сколько угодно раз до закрытия приёма. Приём закрывается за ${lockH} ч до начала матча: так мы защищаемся от переносов и матчей, сыгранных раньше срока. Время закрытия указано в карточке матча.</li>
+     <li>Если матч переносят, срок закрытия пересчитывается по новому времени.</li>
+     <li>Все ваши прогнозы, реальный счёт и очки сохраняются во вкладке «История».</li>
+     <li>Исход и тотал считаются по результату матча без серии пенальти. В плей-офф прогнозируется каждый матч отдельно.</li>
+     <li>Расписание и результаты подтягиваются с сайта турнира автоматически.</li>
+     <li>При равенстве очков выше тот, у кого больше матчей с угаданными исходом и тоталом, затем больше угаданных исходов, затем тоталов.</li>
+     <li>Конкурс бесплатный: это игра на знание турнира, ставки на деньги не принимаются.</li></ul></div>
+   <div class="card"><h2 class="mono">Призы</h2><ul>${PRIZES.map(p=>`<li><b>${esc(p.place)}</b>: ${esc(p.text)}</li>`).join("")}</ul><p style="margin-top:10px;color:var(--muted);font-size:13px">Победитель определяется по итогам всего турнира. Организатор свяжется с ним в Telegram.</p></div>
+  </div>`;
+}
+function headerHtml(){
+  const chip=ov.registered&&ov.me?`<span class="me-chip">★ ${esc(ov.me.points)} · #${esc(ov.me.rank)}</span>`:"";
+  return `<div class="top-in"><span class="logo"><img src="${LOGO}" alt=""></span><div class="ttl"><b class="mono">Пиалиста</b><small>ПИАЛА CUP II</small></div>${chip}</div>`;
+}
+function navHtml(){
+  return `<nav class="nav"><div class="nav-in">${[["matches","Матчи"],["board","Лидеры"],["history","История"],["rules","Правила"]].map(([k,t])=>`<button type="button" class="${tab===k?"on":""}" data-act="tab" data-v="${k}">${t}</button>`).join("")}</div></nav>`;
+}
+function bodyHtml(){
+  if(tab==="board")return bannerHtml()+boardHtml();
+  if(tab==="rules")return rulesHtml();
+  if(tab==="history")return historyHtml();
+  return `<div class="eyebrow">ПРОГНОЗЫ НА МАТЧИ</div><h1 class="mono">Угадай счёт</h1><p class="lead">Исход, точное число голов и призы от спонсоров.</p>`+bannerHtml()+matchesHtml();
+}
+function renderBody(){const el=$("body");if(el)el.innerHTML=bodyHtml()}
+function render(soft){
+  if(soft&&$("body")){
+    // мягкое обновление: меняем только то, что видно, и сохраняем прокрутку
+    const y=scrollY;
+    $("hdr").innerHTML=headerHtml();renderBody();scrollTo(0,y);
+    return;
+  }
+  root.innerHTML=`<div class="top" id="hdr">${headerHtml()}</div><main class="main" id="body">${bodyHtml()}</main>`+navHtml();
+}
+
+// ---------- действия ----------
+function toast(text,bad){
+  document.querySelectorAll(".toast").forEach(n=>n.remove());
+  const t=document.createElement("div");t.className="toast"+(bad?" err":"");t.setAttribute("role","status");t.textContent=text;document.body.appendChild(t);
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.remove(),2800);
+}
+function enqueue(id,job){queue[id]=(queue[id]||Promise.resolve()).then(job,job)}
+function setPick(id,field,value){
+  if(ov.auth!=="ok"||!ov.registered){
+    haptic("warning");toast(ov.auth==="none"?"Откройте приложение в Telegram, чтобы делать прогнозы":ov.auth==="ok"?"Сначала нажмите «Участвовать»":errText({code:ov.auth}),true);
+    if(ov.auth==="ok")scrollTo({top:0,behavior:"smooth"});
+    return;
+  }
+  const m=list.find(x=>x.id===id);
+  if(!m||stateOf(m)!=="open"){toast(ERR.closed,true);haptic("error");syncAll().then(()=>render(true)).catch(()=>{});return}
+  const cur=ov.picks[id]||{o:null,t:null},prev=cur[field];
+  if(prev===value)return;
+  ov.picks[id]={...cur,[field]:value};status[id]="saving";updateCard(id);haptic("select");
+  enqueue(id,async()=>{
+    try{
+      const r=await rpc("pp_pick",{p_init:INIT,p_match:id,p_outcome:field==="o"?value:null,p_total:field==="t"?value:null});
+      ov.picks[id]={...ov.picks[id],o:r.o,t:r.t,at:r.at};status[id]="saved";haptic("success");
+    }catch(e){
+      const p={...(ov.picks[id]||{}),[field]:prev};
+      if(p.o==null&&p.t==null)delete ov.picks[id];else ov.picks[id]=p;
+      status[id]="bad";haptic("error");toast(errText(e),true);
+      if(e.code==="closed"||e.code==="no_match")syncAll().then(()=>render(true)).catch(()=>{});
+    }
+    updateCard(id);
+  });
+}
+async function register(){
+  if(!INIT)return;
+  const btn=root.querySelector('[data-act="register"]');if(btn)btn.disabled=true;
+  try{
+    applyOverview(await rpc("pp_register",{p_init:INIT}));
+    haptic("success");toast("Вы в игре! Делайте прогнозы");
+    loadBoard();render();
+  }catch(e){
+    haptic("error");toast(errText(e),true);if(btn)btn.disabled=false;
+  }
+}
+root.addEventListener("click",ev=>{
+  const el=ev.target.closest("[data-act]");if(!el||el.disabled)return;
+  const a=el.dataset.act,v=el.dataset.v;
+  if(a==="tab"){tab=v;haptic("select");render();scrollTo(0,0);if(v==="board")loadBoard();return}
+  if(a==="filter"){filter=v;haptic("select");renderBody();return}
+  if(a==="o")return setPick(el.dataset.id,"o",v);
+  if(a==="t")return setPick(el.dataset.id,"t",Number(v));
+  if(a==="register")return register();
+  if(a==="goto"||a==="edit"){
+    haptic("select");
+    if(a==="goto"){filter="soon";renderBody()}else{tab="matches";filter="mine";render()}
+    const card=root.querySelector(`[data-mid="${CSS.escape(el.dataset.id)}"]`);
+    if(card)card.scrollIntoView({block:"center"});else scrollTo(0,0);
+    return;
+  }
+  if(a==="retry"){fatal="";render();boot();return}
+  if(a==="share"){
+    const url="https://t.me/share/url?url="+encodeURIComponent(APP_LINK)+"&text="+encodeURIComponent("Пиалиста — прогнозы на Пиала Cup II. Присоединяйся и выигрывай призы от спонсоров!");
+    if(TG&&TG.openTelegramLink)tgTry(()=>TG.openTelegramLink(url));else window.open(url,"_blank");
+  }
+});
+// обратный отсчёт: обновляем подписи; когда матч начался — перерисовываем карточку
+setInterval(()=>{
+  if(!sched)return;
+  const s=list.map(m=>stateOf(m)).join();
+  const busy=Object.values(status).includes("saving");
+  if(stSig&&s!==stSig&&!busy){stSig=s;render(true);return}   // матч перешёл в новое состояние (приём закрыт / начался)
+  stSig=s;
+  document.querySelectorAll("[data-closes]").forEach(el=>{
+    const card=el.closest("article[data-mid]"),m=card&&list.find(x=>x.id===card.dataset.mid);
+    if(m)el.textContent=closeText(m);
+  });
+},15000);
+
+boot();
+})();
+</script>
+</body>
+</html>
